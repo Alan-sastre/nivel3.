@@ -327,9 +327,6 @@ class scenaIA extends Phaser.Scene {
 
           // Verificar si se han completado todas las preguntas
           if (this.currentMessageIndex >= this.messages.length) {
-            // Pausar el juego y mostrar alerta
-            this.scene.pause("scenaIA");
-
             // Crear fondo semi-transparente
             const overlay = this.add.graphics();
             overlay.fillStyle(0x000000, 0.7);
@@ -383,7 +380,7 @@ class scenaIA extends Phaser.Scene {
             const countdownText = this.add.text(
               this.scale.width / 2,
               this.scale.height / 2 + 70,
-              "Cambiando en 3 segundos...",
+              "",
               {
                 font: "20px Arial",
                 color: "#7F8C8D",
@@ -391,6 +388,16 @@ class scenaIA extends Phaser.Scene {
               }
             );
             countdownText.setOrigin(0.5);
+
+            // Limpiar elementos de progreso
+            progressBg.destroy();
+            progressBar.destroy();
+            progressText.destroy();
+
+            // Desactivar todos los botones
+            this.optionButtons.forEach((btn) => {
+              btn.disableInteractive();
+            });
 
             // Cambiar a la siguiente escena después de 3 segundos
             this.time.delayedCall(3000, () => {
