@@ -41,6 +41,7 @@ class scenaIA extends Phaser.Scene {
     ];
     this.currentMessageIndex = 0;
     this.currentMessage = this.messages[this.currentMessageIndex];
+    this.incorrectOptions = []; // Array para mantener registro de opciones incorrectas
   }
 
   preload() {
@@ -118,8 +119,16 @@ class scenaIA extends Phaser.Scene {
     this.currentMessage.options.forEach((option, index) => {
       // Fondo del botón con estilo elegante
       const btn = this.add.graphics();
-      btn.fillStyle(0xecf0f1, 0.95);
-      btn.lineStyle(2, option.isCorrect ? 0x2c3e50 : 0x7f8c8d, 1);
+
+      // Verificar si la opción ya fue marcada como incorrecta
+      const isIncorrect = this.incorrectOptions.includes(index);
+
+      btn.fillStyle(isIncorrect ? 0xe74c3c : 0xecf0f1, 0.95);
+      btn.lineStyle(
+        2,
+        isIncorrect ? 0xe74c3c : option.isCorrect ? 0x2c3e50 : 0x7f8c8d,
+        1
+      );
       btn.fillRoundedRect(
         this.scale.width / 2 - (this.scale.width - 100) / 2,
         startY + index * (buttonHeight + spacing),
@@ -143,7 +152,7 @@ class scenaIA extends Phaser.Scene {
           option.label,
           {
             font: "22px Arial",
-            color: "#2C3E50",
+            color: isIncorrect ? "#ECF0F1" : "#2C3E50",
             align: "center",
           }
         )
@@ -169,53 +178,56 @@ class scenaIA extends Phaser.Scene {
       button.setData("option", option);
       button.setData("graphics", btn);
       button.setData("text", text);
+      button.setData("index", index);
 
       // Efectos de hover elegantes
       button.on("pointerover", () => {
-        btn.clear();
-        btn.fillStyle(0x2c3e50, 1); // Fondo azul oscuro sólido
-        btn.lineStyle(2, 0x2c3e50, 1);
-        btn.fillRoundedRect(
-          this.scale.width / 2 - (this.scale.width - 100) / 2,
-          startY + index * (buttonHeight + spacing),
-          this.scale.width - 100,
-          buttonHeight,
-          15
-        );
-        btn.strokeRoundedRect(
-          this.scale.width / 2 - (this.scale.width - 100) / 2,
-          startY + index * (buttonHeight + spacing),
-          this.scale.width - 100,
-          buttonHeight,
-          15
-        );
-        // Cambiar color del texto a blanco
-        text.setColor("#ECF0F1");
+        if (!this.incorrectOptions.includes(index)) {
+          btn.clear();
+          btn.fillStyle(0x2c3e50, 1);
+          btn.lineStyle(2, 0x2c3e50, 1);
+          btn.fillRoundedRect(
+            this.scale.width / 2 - (this.scale.width - 100) / 2,
+            startY + index * (buttonHeight + spacing),
+            this.scale.width - 100,
+            buttonHeight,
+            15
+          );
+          btn.strokeRoundedRect(
+            this.scale.width / 2 - (this.scale.width - 100) / 2,
+            startY + index * (buttonHeight + spacing),
+            this.scale.width - 100,
+            buttonHeight,
+            15
+          );
+          text.setColor("#ECF0F1");
+        }
       });
 
       button.on("pointerout", () => {
-        btn.clear();
-        btn.fillStyle(0xecf0f1, 0.95);
-        btn.lineStyle(2, option.isCorrect ? 0x2c3e50 : 0x7f8c8d, 1);
-        btn.fillRoundedRect(
-          this.scale.width / 2 - (this.scale.width - 100) / 2,
-          startY + index * (buttonHeight + spacing),
-          this.scale.width - 100,
-          buttonHeight,
-          15
-        );
-        btn.strokeRoundedRect(
-          this.scale.width / 2 - (this.scale.width - 100) / 2,
-          startY + index * (buttonHeight + spacing),
-          this.scale.width - 100,
-          buttonHeight,
-          15
-        );
-        // Restaurar color del texto original
-        text.setColor("#2C3E50");
+        if (!this.incorrectOptions.includes(index)) {
+          btn.clear();
+          btn.fillStyle(0xecf0f1, 0.95);
+          btn.lineStyle(2, option.isCorrect ? 0x2c3e50 : 0x7f8c8d, 1);
+          btn.fillRoundedRect(
+            this.scale.width / 2 - (this.scale.width - 100) / 2,
+            startY + index * (buttonHeight + spacing),
+            this.scale.width - 100,
+            buttonHeight,
+            15
+          );
+          btn.strokeRoundedRect(
+            this.scale.width / 2 - (this.scale.width - 100) / 2,
+            startY + index * (buttonHeight + spacing),
+            this.scale.width - 100,
+            buttonHeight,
+            15
+          );
+          text.setColor("#2C3E50");
+        }
       });
 
-      button.on("pointerdown", () => this.checkAnswer(option));
+      button.on("pointerdown", () => this.checkAnswer(option, index));
 
       this.optionButtons.push(button);
     });
@@ -232,8 +244,8 @@ class scenaIA extends Phaser.Scene {
     }
   }
 
-  checkAnswer(selectedOption) {
-    // Deshabilitar todos los botones durante la animación
+  checkAnswer(selectedOption, optionIndex) {
+    // Deshabilitar temporalmente los botones durante la animación
     this.optionButtons.forEach((btn) => {
       btn.disableInteractive();
     });
@@ -257,7 +269,7 @@ class scenaIA extends Phaser.Scene {
 
     // Barra de progreso
     const progressBar = this.add.graphics();
-    const barColor = selectedOption.isCorrect ? 0x2c3e50 : 0x7f8c8d;
+    const barColor = selectedOption.isCorrect ? 0x2c3e50 : 0xe74c3c;
     progressBar.fillStyle(barColor, 0.8);
     progressBar.fillRoundedRect(progressX, progressY, 0, progressHeight, 10);
 
@@ -311,6 +323,7 @@ class scenaIA extends Phaser.Scene {
 
           // Cambiar a la siguiente pregunta
           this.currentMessageIndex++;
+          this.incorrectOptions = []; // Resetear las opciones incorrectas
 
           // Verificar si se han completado todas las preguntas
           if (this.currentMessageIndex >= this.messages.length) {
@@ -393,14 +406,43 @@ class scenaIA extends Phaser.Scene {
         } else {
           progressText.setText("Clasificación Incorrecta");
           progressText.setColor("#E74C3C");
-        }
 
-        // Limpiar elementos de progreso después de un tiempo
-        this.time.delayedCall(1000, () => {
-          progressBg.destroy();
-          progressBar.destroy();
-          progressText.destroy();
-        });
+          // Agregar la opción incorrecta a la lista
+          if (!this.incorrectOptions.includes(optionIndex)) {
+            this.incorrectOptions.push(optionIndex);
+          }
+
+          // Mostrar mensaje de intentar de nuevo
+          const tryAgainText = this.add
+            .text(
+              this.scale.width / 2,
+              this.scale.height - 20,
+              "Intenta de nuevo",
+              {
+                font: "20px Arial",
+                color: "#E74C3C",
+                align: "center",
+              }
+            )
+            .setOrigin(0.5);
+
+          // Limpiar elementos de progreso después de un tiempo
+          this.time.delayedCall(1000, () => {
+            progressBg.destroy();
+            progressBar.destroy();
+            progressText.destroy();
+            tryAgainText.destroy();
+
+            // Reactivar los botones para permitir otro intento
+            this.optionButtons.forEach((btn) => {
+              btn.setInteractive();
+            });
+
+            // Redibujar los botones para mostrar las opciones incorrectas en rojo
+            this.destroyOptionButtons();
+            this.createOptionButtons();
+          });
+        }
       }
     };
 
