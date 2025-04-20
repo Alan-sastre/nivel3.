@@ -10,7 +10,6 @@ class scenaPregunta extends Phaser.Scene {
     // Cargar el fondo
     this.load.image("fondoo", "assets/ScenaDialogo/fondo.jpg");
 
-    this.load.audio("MusicRobot", "assets/ScenaDialogo/MusicRobot.mp3");
   }
 
   create() {
@@ -92,7 +91,6 @@ void loop() {
  digitalWrite(ledVerde, HIGH);
  delay(5000);
  digitalWrite(ledVerde, LOW);
- // Apagar el LED verde antes de repetir el ciclo
 }`;
 
     // Crear los cuadros según la posición aleatoria
@@ -627,7 +625,7 @@ void loop() {
           this.showCurrentStep();
         } else {
           // Si es el último paso, ir a la siguiente escena
-          this.scene.start("scenaRobot");
+          this.scene.start("scenaFin");
         }
       });
 

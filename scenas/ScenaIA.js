@@ -116,12 +116,17 @@ class scenaIA extends Phaser.Scene {
       this.currentMessage.options.length * (buttonHeight + spacing);
     const startY = 280;
 
-    this.currentMessage.options.forEach((option, index) => {
+    // Mezclar aleatoriamente las opciones
+    const shuffledOptions = [...this.currentMessage.options].sort(
+      () => Math.random() - 0.5
+    );
+
+    shuffledOptions.forEach((option, index) => {
       // Fondo del botón con estilo elegante
       const btn = this.add.graphics();
 
       // Verificar si la opción ya fue marcada como incorrecta
-      const isIncorrect = this.incorrectOptions.includes(index);
+      const isIncorrect = this.incorrectOptions.includes(option.value);
 
       btn.fillStyle(isIncorrect ? 0xe74c3c : 0xecf0f1, 0.95);
       btn.lineStyle(
@@ -182,7 +187,7 @@ class scenaIA extends Phaser.Scene {
 
       // Efectos de hover elegantes
       button.on("pointerover", () => {
-        if (!this.incorrectOptions.includes(index)) {
+        if (!this.incorrectOptions.includes(option.value)) {
           btn.clear();
           btn.fillStyle(0x2c3e50, 1);
           btn.lineStyle(2, 0x2c3e50, 1);
@@ -205,7 +210,7 @@ class scenaIA extends Phaser.Scene {
       });
 
       button.on("pointerout", () => {
-        if (!this.incorrectOptions.includes(index)) {
+        if (!this.incorrectOptions.includes(option.value)) {
           btn.clear();
           btn.fillStyle(0xecf0f1, 0.95);
           btn.lineStyle(2, option.isCorrect ? 0x2c3e50 : 0x7f8c8d, 1);
@@ -401,7 +406,7 @@ class scenaIA extends Phaser.Scene {
 
             // Cambiar a la siguiente escena después de 3 segundos
             this.time.delayedCall(3000, () => {
-              this.scene.start("scenaPregunta");
+              this.scene.start("scenaUltima");
             });
           } else {
             // Actualizar texto y botones
@@ -415,8 +420,8 @@ class scenaIA extends Phaser.Scene {
           progressText.setColor("#E74C3C");
 
           // Agregar la opción incorrecta a la lista
-          if (!this.incorrectOptions.includes(optionIndex)) {
-            this.incorrectOptions.push(optionIndex);
+          if (!this.incorrectOptions.includes(selectedOption.value)) {
+            this.incorrectOptions.push(selectedOption.value);
           }
 
           // Mostrar mensaje de intentar de nuevo
