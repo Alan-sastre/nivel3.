@@ -316,13 +316,17 @@ class scenaInput extends Phaser.Scene {
       btnRow.style.left = "4vw";
       btnRow.style.top = "78vh";
       btnRow.style.width = "92vw";
+      btnRow.style.display = "flex";
+    } else if (isMobile && !isLandscape) {
+      // Móvil vertical: OCULTAR botones
+      btnRow.style.display = "none";
     } else {
-      // PC o móvil vertical: botones debajo del input a la izquierda
+      // PC: botones debajo del input a la izquierda
       btnRow.style.left = "6vw";
       btnRow.style.top = "72vh";
       btnRow.style.width = "38vw";
+      btnRow.style.display = "flex";
     }
-    btnRow.style.display = "flex";
     btnRow.style.flexDirection = "row";
     btnRow.style.justifyContent = "space-between";
     btnRow.style.gap = "2vw";
