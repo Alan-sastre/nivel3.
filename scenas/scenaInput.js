@@ -175,17 +175,21 @@ class scenaInput extends Phaser.Scene {
     compilerDiv.id = "compiler-output";
     compilerDiv.style.position = "fixed";
     if (isMobile && isLandscape) {
-      // Móvil horizontal: compilador abajo, casi todo el ancho
-      compilerDiv.style.left = "4vw";
-      compilerDiv.style.top = "44vh";
-      compilerDiv.style.width = "92vw";
-      compilerDiv.style.height = "38vh";
+      // Móvil horizontal: compilador en el centro, ocupa todo el ancho y deja espacio a botones
+      compilerDiv.style.left = "0";
+      compilerDiv.style.top = "31vh";
+      compilerDiv.style.width = "100vw";
+      compilerDiv.style.height = "36vh";
+      compilerDiv.style.margin = "0";
+      compilerDiv.style.padding = "0 2vw";
     } else {
       // PC o móvil vertical: compilador a la derecha
       compilerDiv.style.right = "6vw";
       compilerDiv.style.top = "18vh";
       compilerDiv.style.width = "38vw";
       compilerDiv.style.height = "52vh";
+      compilerDiv.style.margin = "";
+      compilerDiv.style.padding = "18px 16px";
     }
     compilerDiv.style.background = "#1e2430";
     compilerDiv.style.color = "#e0f7fa";
@@ -237,17 +241,21 @@ class scenaInput extends Phaser.Scene {
     const input = document.createElement("textarea");
     input.style.position = "fixed";
     if (isMobile && isLandscape) {
-      // Móvil horizontal: input arriba, casi todo el ancho
-      input.style.left = "4vw";
-      input.style.top = "10vh";
-      input.style.width = "92vw";
-      input.style.height = "28vh";
+      // Móvil horizontal: input arriba, ocupa todo el ancho y deja espacio a botones y compilador
+      input.style.left = "0";
+      input.style.top = "8vh";
+      input.style.width = "100vw";
+      input.style.height = "22vh";
+      input.style.margin = "0";
+      input.style.padding = "0 2vw";
     } else {
       // PC o móvil vertical: input a la izquierda
       input.style.left = "6vw";
       input.style.top = "18vh";
       input.style.width = "38vw";
       input.style.height = "52vh";
+      input.style.margin = "";
+      input.style.padding = "18px 16px";
     }
     input.style.background = "#212733";
     input.style.color = "#e0f7fa";
@@ -323,7 +331,7 @@ class scenaInput extends Phaser.Scene {
       if (isMobile && isLandscapeNow) {
         btnRow.style.left = "0";
         btnRow.style.right = "0";
-        btnRow.style.top = "78vh";
+        btnRow.style.top = "69vh";
         btnRow.style.width = "100vw";
         btnRow.style.margin = "0";
         btnRow.style.padding = "0 2vw";
