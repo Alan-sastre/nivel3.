@@ -373,6 +373,7 @@ class scenaInput extends Phaser.Scene {
       if (this.hints && this.hints.length > 0) {
         const hint = this.hints[this.currentHintIndex % this.hints.length];
         if (window.Swal) {
+          const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
           Swal.fire({
             title: 'Pista',
             text: hint,
@@ -381,7 +382,7 @@ class scenaInput extends Phaser.Scene {
             background: '#fffbe6',
             color: '#a67c00',
             customClass: {
-              popup: 'swal2-pista-popup',
+              popup: isMobile ? 'swal2-pista-popup swal2-pista-mobile' : 'swal2-pista-popup',
               title: 'swal2-pista-title',
               confirmButton: 'swal2-pista-confirm',
             },
@@ -411,6 +412,12 @@ class scenaInput extends Phaser.Scene {
         .swal2-icon.swal2-warning { border-color: #ffe066 !important; color: #ffe066 !important; }
         .swal2-container { z-index: 2147483647 !important; }
         .swal2-popup { z-index: 2147483647 !important; }
+        .swal2-pista-mobile {
+          max-width: 80vw !important;
+          width: 92vw !important;
+          font-size: 15px !important;
+          padding: 12px 8px !important;
+        }
       `;
       document.head.appendChild(style);
     }
