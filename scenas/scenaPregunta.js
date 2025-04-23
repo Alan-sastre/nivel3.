@@ -9,7 +9,6 @@ class scenaPregunta extends Phaser.Scene {
   preload() {
     // Cargar el fondo
     this.load.image("fondoo", "assets/ScenaDialogo/fondo.jpg");
-
   }
 
   create() {
@@ -624,8 +623,8 @@ void loop() {
           this.currentStep++;
           this.showCurrentStep();
         } else {
-          // Si es el último paso, ir a la siguiente escena
-          this.scene.start("scenaFin");
+          // Si es el último paso, ir a la escena de armado de código
+          this.scene.start("scenaInput");
         }
       });
 
