@@ -215,6 +215,12 @@ class scenaInput extends Phaser.Scene {
     if (btnRow && btnRow.parentNode) {
       btnRow.parentNode.removeChild(btnRow);
     }
+    // Limpia el listener de orientación/resize
+    if (this._btnRowResizeHandler) {
+      window.removeEventListener('resize', this._btnRowResizeHandler);
+      window.removeEventListener('orientationchange', this._btnRowResizeHandler);
+      this._btnRowResizeHandler = null;
+    }
     // Elimina la sección del compilador si existe
     const compilerDiv = document.getElementById('compiler-output');
     if (compilerDiv && compilerDiv.parentNode) {
@@ -311,26 +317,33 @@ class scenaInput extends Phaser.Scene {
     btnRow = document.createElement("div");
     btnRow.id = "input-btn-row";
     btnRow.style.position = "fixed";
-    if (isMobile && isLandscape) {
-      // Móvil horizontal: botones debajo del input, ancho completo
-      btnRow.style.left = "4vw";
-      btnRow.style.top = "78vh";
-      btnRow.style.width = "92vw";
-      btnRow.style.display = "flex";
-    } else if (isMobile && !isLandscape) {
-      // Móvil vertical: OCULTAR botones
-      btnRow.style.display = "none";
-    } else {
-      // PC: botones debajo del input a la izquierda
-      btnRow.style.left = "6vw";
-      btnRow.style.top = "72vh";
-      btnRow.style.width = "38vw";
-      btnRow.style.display = "flex";
+
+    function updateBtnRowLayout() {
+      const isLandscapeNow = window.matchMedia("(orientation: landscape)").matches;
+      if (isMobile && isLandscapeNow) {
+        btnRow.style.left = "4vw";
+        btnRow.style.top = "78vh";
+        btnRow.style.width = "92vw";
+        btnRow.style.display = "flex";
+      } else if (isMobile && !isLandscapeNow) {
+        btnRow.style.display = "none";
+      } else {
+        btnRow.style.left = "6vw";
+        btnRow.style.top = "72vh";
+        btnRow.style.width = "38vw";
+        btnRow.style.display = "flex";
+      }
+      btnRow.style.flexDirection = "row";
+      btnRow.style.justifyContent = "space-between";
+      btnRow.style.gap = "2vw";
+      btnRow.style.zIndex = "1100";
     }
-    btnRow.style.flexDirection = "row";
-    btnRow.style.justifyContent = "space-between";
-    btnRow.style.gap = "2vw";
-    btnRow.style.zIndex = "1100";
+    // Inicializa layout
+    updateBtnRowLayout();
+    // Listener para cambios de orientación/tamaño
+    this._btnRowResizeHandler = () => updateBtnRowLayout();
+    window.addEventListener('resize', this._btnRowResizeHandler);
+    window.addEventListener('orientationchange', this._btnRowResizeHandler);
 
     // --- Botón Pista ---
     const pistaBtn = document.createElement("button");
