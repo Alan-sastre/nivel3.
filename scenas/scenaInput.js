@@ -321,9 +321,12 @@ class scenaInput extends Phaser.Scene {
     function updateBtnRowLayout() {
       const isLandscapeNow = window.matchMedia("(orientation: landscape)").matches;
       if (isMobile && isLandscapeNow) {
-        btnRow.style.left = "4vw";
+        btnRow.style.left = "0";
+        btnRow.style.right = "0";
         btnRow.style.top = "78vh";
-        btnRow.style.width = "92vw";
+        btnRow.style.width = "100vw";
+        btnRow.style.margin = "0";
+        btnRow.style.padding = "0 2vw";
         btnRow.style.display = "flex";
       } else if (isMobile && !isLandscapeNow) {
         btnRow.style.display = "none";
