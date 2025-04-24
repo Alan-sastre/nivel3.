@@ -76,7 +76,8 @@ class scenaInput extends Phaser.Scene {
   createSingleVerifyButton(width, height) {
     const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
     if (isMobile) {
-      // HTML buttons para móvil, SIEMPRE visibles y abajo
+      // HTML buttons para móvil, SIEMPRE visibles y abajo, incluso en horizontal (landscape)
+      // NO usar top ni height fijos, ni media queries JS para landscape
       let btnRow = document.getElementById('input-btn-row');
       if (btnRow) btnRow.remove();
       btnRow = document.createElement('div');
@@ -87,18 +88,20 @@ class scenaInput extends Phaser.Scene {
       btnRow.style.top = 'auto';
       btnRow.style.bottom = '0';
       btnRow.style.width = '100vw';
-      btnRow.style.height = '';
+      btnRow.style.height = 'auto';
       btnRow.style.display = 'flex';
       btnRow.style.justifyContent = 'space-evenly';
       btnRow.style.alignItems = 'center';
       btnRow.style.background = 'rgba(30,34,43,0.97)';
-      btnRow.style.zIndex = '99999';
+      btnRow.style.zIndex = '2147483646';
       btnRow.style.gap = '3vw';
       btnRow.style.pointerEvents = 'auto';
-      // Evita doble creación
+      // NO listeners para orientation/resize que cambien layout en móvil
+      // Siempre agrega los botones abajo
       setTimeout(()=>{
         if (!document.body.contains(btnRow)) document.body.appendChild(btnRow);
       }, 0);
+    
       // Botón Pista
       const pistaBtn = document.createElement('button');
       pistaBtn.innerText = 'Pista';
@@ -426,12 +429,14 @@ class scenaInput extends Phaser.Scene {
         btnRow.style.top = '';
       }
     }
-    // Inicializa layout
-    updateBtnRowLayout();
-    // Listener para cambios de orientación/tamaño
-    this._btnRowResizeHandler = () => updateBtnRowLayout();
-    window.addEventListener('resize', this._btnRowResizeHandler);
-    window.addEventListener('orientationchange', this._btnRowResizeHandler);
+    // NO listeners para cambios de orientación/tamaño en móvil: los botones siempre van abajo
+    // Limpieza garantizada en shutdown()
+    if (!isMobile) {
+      updateBtnRowLayout();
+      this._btnRowResizeHandler = () => updateBtnRowLayout();
+      window.addEventListener('resize', this._btnRowResizeHandler);
+      window.addEventListener('orientationchange', this._btnRowResizeHandler);
+    }
 
     // --- Botón Pista ---
     const pistaBtn = document.createElement("button");
