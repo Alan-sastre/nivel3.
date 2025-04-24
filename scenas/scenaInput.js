@@ -87,7 +87,7 @@ class scenaInput extends Phaser.Scene {
       btnRow.style.top = 'auto';
       btnRow.style.bottom = '0';
       btnRow.style.width = '100vw';
-      btnRow.style.height = '9vh';
+      btnRow.style.height = '';
       btnRow.style.display = 'flex';
       btnRow.style.justifyContent = 'space-evenly';
       btnRow.style.alignItems = 'center';
@@ -389,9 +389,7 @@ class scenaInput extends Phaser.Scene {
     input.focus();
   }
 
-  // Nuevo botón único debajo del área de código
   createSingleVerifyButton(width, height) {
-    // Detecta si es móvil y horizontal
     const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
     const isLandscape = window.matchMedia("(orientation: landscape)").matches;
     // Botones HTML visibles debajo del input, alineados horizontalmente
@@ -407,11 +405,11 @@ class scenaInput extends Phaser.Scene {
         // Móvil: botones abajo, ancho completo y SIEMPRE visibles
         btnRow.style.left = "0";
         btnRow.style.right = "0";
-        btnRow.style.top = "91vh";
+        btnRow.style.top = '';
         btnRow.style.width = "100vw";
         btnRow.style.margin = "0";
         btnRow.style.padding = "0 2vw";
-        btnRow.style.display = "flex";
+        btnRow.style.display = 'flex';
       } else {
         btnRow.style.left = "6vw";
         btnRow.style.top = "72vh";
@@ -422,6 +420,11 @@ class scenaInput extends Phaser.Scene {
       btnRow.style.justifyContent = "space-between";
       btnRow.style.gap = "2vw";
       btnRow.style.zIndex = "1100";
+      // Solo en móvil: asegúrate de que no haya height ni top
+      if (isMobile) {
+        btnRow.style.height = '';
+        btnRow.style.top = '';
+      }
     }
     // Inicializa layout
     updateBtnRowLayout();
@@ -511,24 +514,8 @@ class scenaInput extends Phaser.Scene {
     compilarBtn.style.cursor = "pointer";
     compilarBtn.onclick = () => this.compileCode();
 
-    // --- Botón Verificar ---
-    const verificarBtn = document.createElement("button");
-    verificarBtn.innerText = "Verificar código";
-    verificarBtn.style.flex = "1";
-    verificarBtn.style.height = "54px";
-    verificarBtn.style.fontSize = "20px";
-    verificarBtn.style.fontWeight = "bold";
-    verificarBtn.style.background = "#2980b9";
-    verificarBtn.style.color = "#fff";
-    verificarBtn.style.border = "2.5px solid #2471a3";
-    verificarBtn.style.borderRadius = "12px";
-    verificarBtn.style.boxShadow = "0 2px 8px 0 rgba(41,128,185,0.13)";
-    verificarBtn.style.cursor = "pointer";
-    verificarBtn.onclick = () => this.compileCode();
-
     btnRow.appendChild(pistaBtn);
     btnRow.appendChild(compilarBtn);
-    btnRow.appendChild(verificarBtn);
     document.body.appendChild(btnRow);
   }
 
