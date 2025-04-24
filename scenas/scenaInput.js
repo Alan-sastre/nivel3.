@@ -105,6 +105,10 @@ class scenaInput extends Phaser.Scene {
       // Ajusta el body para que no tenga scroll en móvil
       document.body.style.overflow = 'hidden';
 
+      // Asegura que el canvas de Phaser esté detrás de los botones
+      const phaserCanvas = document.querySelector('canvas');
+      if (phaserCanvas) phaserCanvas.style.zIndex = '1';
+
       // Botón Pista
       const pistaBtn = document.createElement('button');
       pistaBtn.innerText = 'Pista';
