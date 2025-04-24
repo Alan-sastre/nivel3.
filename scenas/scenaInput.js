@@ -93,15 +93,18 @@ class scenaInput extends Phaser.Scene {
       btnRow.style.justifyContent = 'space-evenly';
       btnRow.style.alignItems = 'center';
       btnRow.style.background = 'rgba(30,34,43,0.97)';
-      btnRow.style.zIndex = '2147483646';
+      btnRow.style.zIndex = '2147483646'; // Ajusta el z-index para que los botones estén encima
       btnRow.style.gap = '3vw';
       btnRow.style.pointerEvents = 'auto';
       // NO listeners para orientation/resize que cambien layout en móvil
       // SIEMPRE agrega los botones abajo, inmediatamente
-      btnRow.style.border = '2px solid red'; // DEBUG: borde rojo para ver el contenedor
+      // Elimina cualquier borde de depuración rojo
+      // btnRow.style.border = '2px solid red'; // DEBUG: borde rojo para ver el contenedor
       if (!document.body.contains(btnRow)) document.body.appendChild(btnRow); // <-- Esto garantiza que el contenedor esté en el DOM
 
-    
+      // Ajusta el body para que no tenga scroll en móvil
+      document.body.style.overflow = 'hidden';
+
       // Botón Pista
       const pistaBtn = document.createElement('button');
       pistaBtn.innerText = 'Pista';
@@ -142,7 +145,6 @@ class scenaInput extends Phaser.Scene {
       compilarBtn.onclick = () => this.compileCode();
       btnRow.appendChild(pistaBtn);
       btnRow.appendChild(compilarBtn);
-      document.body.appendChild(btnRow);
     } else {
       // Phaser buttons solo en PC
       const btnW = 130;
@@ -229,9 +231,9 @@ class scenaInput extends Phaser.Scene {
       // Móvil: input a la izquierda, compilador a la derecha (ambos 50vw, 80vh)
       compilerDiv.style.position = "fixed";
       compilerDiv.style.left = "50vw";
-      compilerDiv.style.top = "10vh";
+      compilerDiv.style.top = "50vh";
       compilerDiv.style.width = "50vw";
-      compilerDiv.style.height = "80vh";
+      compilerDiv.style.height = "40vh";
       compilerDiv.style.margin = "0";
       compilerDiv.style.padding = "0 2vw";
     } else {
@@ -302,7 +304,7 @@ class scenaInput extends Phaser.Scene {
       input.style.left = "0";
       input.style.top = "10vh";
       input.style.width = "50vw";
-      input.style.height = "80vh";
+      input.style.height = "40vh";
       input.style.margin = "0";
       input.style.padding = "0 2vw";
     } else {
