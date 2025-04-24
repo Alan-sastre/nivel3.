@@ -174,16 +174,17 @@ class scenaInput extends Phaser.Scene {
     compilerDiv = document.createElement("div");
     compilerDiv.id = "compiler-output";
     compilerDiv.style.position = "fixed";
-    if (isMobile && isLandscape) {
-      // Móvil horizontal: compilador en el centro, ocupa todo el ancho y deja espacio a botones
-      compilerDiv.style.left = "0";
-      compilerDiv.style.top = "31vh";
-      compilerDiv.style.width = "100vw";
-      compilerDiv.style.height = "36vh";
+    if (isMobile) {
+      // Móvil: input a la izquierda, compilador a la derecha (ambos 50vw, 80vh)
+      compilerDiv.style.position = "fixed";
+      compilerDiv.style.left = "50vw";
+      compilerDiv.style.top = "10vh";
+      compilerDiv.style.width = "50vw";
+      compilerDiv.style.height = "80vh";
       compilerDiv.style.margin = "0";
       compilerDiv.style.padding = "0 2vw";
     } else {
-      // PC o móvil vertical: compilador a la derecha
+      // PC: compilador a la derecha
       compilerDiv.style.right = "6vw";
       compilerDiv.style.top = "18vh";
       compilerDiv.style.width = "38vw";
@@ -240,16 +241,16 @@ class scenaInput extends Phaser.Scene {
     // Crear un elemento HTML para el input
     const input = document.createElement("textarea");
     input.style.position = "fixed";
-    if (isMobile && isLandscape) {
-      // Móvil horizontal: input arriba, ocupa todo el ancho y deja espacio a botones y compilador
+    if (isMobile) {
+      // Móvil: input a la izquierda (50vw, 80vh)
       input.style.left = "0";
-      input.style.top = "8vh";
-      input.style.width = "100vw";
-      input.style.height = "22vh";
+      input.style.top = "10vh";
+      input.style.width = "50vw";
+      input.style.height = "80vh";
       input.style.margin = "0";
       input.style.padding = "0 2vw";
     } else {
-      // PC o móvil vertical: input a la izquierda
+      // PC: input a la izquierda
       input.style.left = "6vw";
       input.style.top = "18vh";
       input.style.width = "38vw";
@@ -328,16 +329,15 @@ class scenaInput extends Phaser.Scene {
 
     function updateBtnRowLayout() {
       const isLandscapeNow = window.matchMedia("(orientation: landscape)").matches;
-      if (isMobile && isLandscapeNow) {
+      if (isMobile) {
+        // Móvil: botones abajo, ancho completo
         btnRow.style.left = "0";
         btnRow.style.right = "0";
-        btnRow.style.top = "69vh";
+        btnRow.style.top = "91vh";
         btnRow.style.width = "100vw";
         btnRow.style.margin = "0";
         btnRow.style.padding = "0 2vw";
         btnRow.style.display = "flex";
-      } else if (isMobile && !isLandscapeNow) {
-        btnRow.style.display = "none";
       } else {
         btnRow.style.left = "6vw";
         btnRow.style.top = "72vh";
