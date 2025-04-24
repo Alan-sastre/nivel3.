@@ -97,10 +97,10 @@ class scenaInput extends Phaser.Scene {
       btnRow.style.gap = '3vw';
       btnRow.style.pointerEvents = 'auto';
       // NO listeners para orientation/resize que cambien layout en móvil
-      // Siempre agrega los botones abajo
-      setTimeout(()=>{
-        if (!document.body.contains(btnRow)) document.body.appendChild(btnRow);
-      }, 0);
+      // SIEMPRE agrega los botones abajo, inmediatamente
+      btnRow.style.border = '2px solid red'; // DEBUG: borde rojo para ver el contenedor
+      if (!document.body.contains(btnRow)) document.body.appendChild(btnRow); // <-- Esto garantiza que el contenedor esté en el DOM
+
     
       // Botón Pista
       const pistaBtn = document.createElement('button');
