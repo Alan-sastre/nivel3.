@@ -174,17 +174,16 @@ class scenaInput extends Phaser.Scene {
     compilerDiv = document.createElement("div");
     compilerDiv.id = "compiler-output";
     compilerDiv.style.position = "fixed";
-    if (isMobile) {
-      // Móvil: input a la izquierda, compilador a la derecha (ambos 50vw, 80vh)
-      compilerDiv.style.position = "fixed";
-      compilerDiv.style.left = "50vw";
-      compilerDiv.style.top = "10vh";
-      compilerDiv.style.width = "50vw";
-      compilerDiv.style.height = "80vh";
+    if (isMobile && isLandscape) {
+      // Móvil horizontal: compilador en el centro, ocupa todo el ancho y deja espacio a botones
+      compilerDiv.style.left = "0";
+      compilerDiv.style.top = "31vh";
+      compilerDiv.style.width = "100vw";
+      compilerDiv.style.height = "36vh";
       compilerDiv.style.margin = "0";
       compilerDiv.style.padding = "0 2vw";
     } else {
-      // PC: compilador a la derecha
+      // PC o móvil vertical: compilador a la derecha
       compilerDiv.style.right = "6vw";
       compilerDiv.style.top = "18vh";
       compilerDiv.style.width = "38vw";
@@ -241,16 +240,16 @@ class scenaInput extends Phaser.Scene {
     // Crear un elemento HTML para el input
     const input = document.createElement("textarea");
     input.style.position = "fixed";
-    if (isMobile) {
-      // Móvil: input a la izquierda (50vw, 80vh)
+    if (isMobile && isLandscape) {
+      // Móvil horizontal: input arriba, ocupa todo el ancho y deja espacio a botones y compilador
       input.style.left = "0";
-      input.style.top = "10vh";
-      input.style.width = "50vw";
-      input.style.height = "80vh";
+      input.style.top = "8vh";
+      input.style.width = "100vw";
+      input.style.height = "22vh";
       input.style.margin = "0";
       input.style.padding = "0 2vw";
     } else {
-      // PC: input a la izquierda
+      // PC o móvil vertical: input a la izquierda
       input.style.left = "6vw";
       input.style.top = "18vh";
       input.style.width = "38vw";
@@ -329,15 +328,16 @@ class scenaInput extends Phaser.Scene {
 
     function updateBtnRowLayout() {
       const isLandscapeNow = window.matchMedia("(orientation: landscape)").matches;
-      if (isMobile) {
-        // Móvil: botones abajo, ancho completo
+      if (isMobile && isLandscapeNow) {
         btnRow.style.left = "0";
         btnRow.style.right = "0";
-        btnRow.style.top = "91vh";
+        btnRow.style.top = "69vh";
         btnRow.style.width = "100vw";
         btnRow.style.margin = "0";
         btnRow.style.padding = "0 2vw";
         btnRow.style.display = "flex";
+      } else if (isMobile && !isLandscapeNow) {
+        btnRow.style.display = "none";
       } else {
         btnRow.style.left = "6vw";
         btnRow.style.top = "72vh";
@@ -373,7 +373,6 @@ class scenaInput extends Phaser.Scene {
       if (this.hints && this.hints.length > 0) {
         const hint = this.hints[this.currentHintIndex % this.hints.length];
         if (window.Swal) {
-          const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
           Swal.fire({
             title: 'Pista',
             text: hint,
@@ -382,7 +381,7 @@ class scenaInput extends Phaser.Scene {
             background: '#fffbe6',
             color: '#a67c00',
             customClass: {
-              popup: isMobile ? 'swal2-pista-popup swal2-pista-mobile' : 'swal2-pista-popup',
+              popup: 'swal2-pista-popup',
               title: 'swal2-pista-title',
               confirmButton: 'swal2-pista-confirm',
             },
@@ -412,12 +411,6 @@ class scenaInput extends Phaser.Scene {
         .swal2-icon.swal2-warning { border-color: #ffe066 !important; color: #ffe066 !important; }
         .swal2-container { z-index: 2147483647 !important; }
         .swal2-popup { z-index: 2147483647 !important; }
-        .swal2-pista-mobile {
-          max-width: 80vw !important;
-          width: 92vw !important;
-          font-size: 15px !important;
-          padding: 12px 8px !important;
-        }
       `;
       document.head.appendChild(style);
     }
