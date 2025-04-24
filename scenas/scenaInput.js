@@ -83,15 +83,22 @@ class scenaInput extends Phaser.Scene {
       btnRow.id = 'input-btn-row';
       btnRow.style.position = 'fixed';
       btnRow.style.left = '0';
+      btnRow.style.right = '0';
+      btnRow.style.top = 'auto';
       btnRow.style.bottom = '0';
       btnRow.style.width = '100vw';
       btnRow.style.height = '9vh';
       btnRow.style.display = 'flex';
       btnRow.style.justifyContent = 'space-evenly';
       btnRow.style.alignItems = 'center';
-      btnRow.style.background = 'rgba(30,34,43,0.95)';
-      btnRow.style.zIndex = '2147483646';
+      btnRow.style.background = 'rgba(30,34,43,0.97)';
+      btnRow.style.zIndex = '99999';
       btnRow.style.gap = '3vw';
+      btnRow.style.pointerEvents = 'auto';
+      // Evita doble creación
+      setTimeout(()=>{
+        if (!document.body.contains(btnRow)) document.body.appendChild(btnRow);
+      }, 0);
       // Botón Pista
       const pistaBtn = document.createElement('button');
       pistaBtn.innerText = 'Pista';
