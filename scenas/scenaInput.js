@@ -40,13 +40,13 @@ class scenaInput extends Phaser.Scene {
     this.fondo.displayWidth = width;
     this.fondo.displayHeight = height;
 
+
+
     // Mostrar título inicial
     this.showInitialAlert();
 
-    // Título arriba del input SOLO en PC
-    if (!/Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent)) {
-      this.createInputTitle(width, height);
-    }
+    // Título arriba del input
+    this.createInputTitle(width, height);
     // Configurar el input de texto
     this.setupTextInput(width, height);
     // Botones alineados debajo del input
@@ -74,55 +74,29 @@ class scenaInput extends Phaser.Scene {
 
 
   createSingleVerifyButton(width, height) {
-    const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
-    if (isMobile) {
-      // HTML buttons para móvil, SIEMPRE visibles y abajo, incluso en horizontal (landscape)
-      // NO usar top ni height fijos, ni media queries JS para landscape
-      let btnRow = document.getElementById('input-btn-row');
-      if (btnRow) btnRow.remove();
-      btnRow = document.createElement('div');
-      btnRow.id = 'input-btn-row';
-      btnRow.style.position = 'fixed';
-      btnRow.style.left = '0';
-      btnRow.style.right = '0';
-      btnRow.style.top = 'auto';
-      btnRow.style.bottom = '0';
-      btnRow.style.width = '100vw';
-      btnRow.style.height = 'auto';
-      btnRow.style.display = 'flex';
-      btnRow.style.justifyContent = 'space-evenly';
-      btnRow.style.alignItems = 'center';
-      btnRow.style.background = 'rgba(30,34,43,0.97)';
-      btnRow.style.zIndex = '2147483646'; // Ajusta el z-index para que los botones estén encima
-      btnRow.style.gap = '3vw';
-      btnRow.style.pointerEvents = 'auto';
-      // NO listeners para orientation/resize que cambien layout en móvil
-      // SIEMPRE agrega los botones abajo, inmediatamente
-      // Elimina cualquier borde de depuración rojo
-      // btnRow.style.border = '2px solid red'; // DEBUG: borde rojo para ver el contenedor
-      if (!document.body.contains(btnRow)) document.body.appendChild(btnRow); // <-- Esto garantiza que el contenedor esté en el DOM
+    // Botones alineados debajo del input
+    const btnW = 130;
+    const btnH = 46;
+    const gap = 18;
+    const totalWidth = btnW * 3 + gap * 2;
+    const startX = (width - totalWidth) / 2;
+    // Posición vertical: debajo del input
+    const btnY = Math.round(height * 0.55);
 
-      // Ajusta el body para que no tenga scroll en móvil
-      document.body.style.overflow = 'hidden';
-
-      // Asegura que el canvas de Phaser esté detrás de los botones
-      const phaserCanvas = document.querySelector('canvas');
-      if (phaserCanvas) phaserCanvas.style.zIndex = '1';
-
-      // Botón Pista
-      const pistaBtn = document.createElement('button');
-      pistaBtn.innerText = 'Pista';
-      pistaBtn.style.flex = '1';
-      pistaBtn.style.height = '7vh';
-      pistaBtn.style.fontSize = '4vw';
-      pistaBtn.style.fontWeight = 'bold';
-      pistaBtn.style.background = '#ffe066';
-      pistaBtn.style.color = '#2C3E50';
-      pistaBtn.style.border = '2.5px solid #f1c40f';
-      pistaBtn.style.borderRadius = '12px';
-      pistaBtn.style.boxShadow = '0 2px 8px 0 rgba(241,196,15,0.13)';
-      pistaBtn.style.cursor = 'pointer';
-      pistaBtn.onclick = () => {
+    // --- Botón de PISTA (izquierda) ---
+    if (this.hintButton && this.hintButton.destroy) this.hintButton.destroy();
+    this.hintButton = this.add.graphics();
+    this.hintButton.fillStyle(0xf1c40f, 0.93);
+    this.hintButton.fillRoundedRect(startX, btnY, btnW, btnH, 12);
+    this.hintButton.lineStyle(2, 0xf39c12);
+    this.hintButton.strokeRoundedRect(startX, btnY, btnW, btnH, 12);
+    const hintText = this.add.text(startX + btnW / 2, btnY + btnH / 2, "Pista", {
+      font: "bold 18px Arial",
+      fill: "#2C3E50",
+    }).setOrigin(0.5);
+    this.add.zone(startX + btnW / 2, btnY + btnH / 2, btnW, btnH)
+      .setInteractive()
+      .on("pointerdown", () => {
         if (this.hints && this.hints.length > 0) {
           const hint = this.hints[this.currentHintIndex % this.hints.length];
           if (window.Swal) {
@@ -132,72 +106,41 @@ class scenaInput extends Phaser.Scene {
           }
           this.currentHintIndex++;
         }
-      };
-      // Botón Compilar
-      const compilarBtn = document.createElement('button');
-      compilarBtn.innerText = 'Compilar';
-      compilarBtn.style.flex = '1';
-      compilarBtn.style.height = '7vh';
-      compilarBtn.style.fontSize = '4vw';
-      compilarBtn.style.fontWeight = 'bold';
-      compilarBtn.style.background = '#2ecc71';
-      compilarBtn.style.color = '#fff';
-      compilarBtn.style.border = '2.5px solid #27ae60';
-      compilarBtn.style.borderRadius = '12px';
-      compilarBtn.style.boxShadow = '0 2px 8px 0 rgba(46,204,113,0.13)';
-      compilarBtn.style.cursor = 'pointer';
-      compilarBtn.onclick = () => this.compileCode();
-      btnRow.appendChild(pistaBtn);
-      btnRow.appendChild(compilarBtn);
-    } else {
-      // Phaser buttons solo en PC
-      const btnW = 130;
-      const btnH = 46;
-      const gap = 18;
-      const totalWidth = btnW * 2 + gap;
-      const startX = (width - totalWidth) / 2;
-      const btnY = Math.round(height * 0.55);
-      // Botón Pista
-      if (this.hintButton && this.hintButton.destroy) this.hintButton.destroy();
-      this.hintButton = this.add.graphics();
-      this.hintButton.fillStyle(0xf1c40f, 0.93);
-      this.hintButton.fillRoundedRect(startX, btnY, btnW, btnH, 12);
-      this.hintButton.lineStyle(2, 0xf39c12);
-      this.hintButton.strokeRoundedRect(startX, btnY, btnW, btnH, 12);
-      const hintText = this.add.text(startX + btnW / 2, btnY + btnH / 2, "Pista", {
-        font: "bold 18px Arial",
-        fill: "#2C3E50",
-      }).setOrigin(0.5);
-      this.add.zone(startX + btnW / 2, btnY + btnH / 2, btnW, btnH)
-        .setInteractive()
-        .on("pointerdown", () => {
-          if (this.hints && this.hints.length > 0) {
-            const hint = this.hints[this.currentHintIndex % this.hints.length];
-            if (window.Swal) {
-              Swal.fire({ title: 'Pista', text: hint, icon: 'info', confirmButtonText: 'Ok' });
-            } else {
-              alert(hint);
-            }
-            this.currentHintIndex++;
-          }
-        });
-      // Botón Compilar
-      if (this.compileButton && this.compileButton.destroy) this.compileButton.destroy();
-      this.compileButton = this.add.graphics();
-      this.compileButton.fillStyle(0x2ecc71, 0.93);
-      this.compileButton.fillRoundedRect(startX + btnW + gap, btnY, btnW, btnH, 12);
-      this.compileButton.lineStyle(2, 0x27ae60);
-      this.compileButton.strokeRoundedRect(startX + btnW + gap, btnY, btnW, btnH, 12);
-      const compileText = this.add.text(startX + btnW + gap + btnW / 2, btnY + btnH / 2, "Compilar", {
-        font: "bold 18px Arial",
-        fill: "#ECF0F1",
-      }).setOrigin(0.5);
-      this.add.zone(startX + btnW + gap + btnW / 2, btnY + btnH / 2, btnW, btnH)
-        .setInteractive()
-        .on("pointerdown", () => {
-          this.compileCode();
-        });
-    }
+      });
+
+    // --- Botón de COMPILAR (centro) ---
+    if (this.compileButton && this.compileButton.destroy) this.compileButton.destroy();
+    this.compileButton = this.add.graphics();
+    this.compileButton.fillStyle(0x2ecc71, 0.93);
+    this.compileButton.fillRoundedRect(startX + btnW + gap, btnY, btnW, btnH, 12);
+    this.compileButton.lineStyle(2, 0x27ae60);
+    this.compileButton.strokeRoundedRect(startX + btnW + gap, btnY, btnW, btnH, 12);
+    const compileText = this.add.text(startX + btnW + gap + btnW / 2, btnY + btnH / 2, "Compilar", {
+      font: "bold 18px Arial",
+      fill: "#ECF0F1",
+    }).setOrigin(0.5);
+    this.add.zone(startX + btnW + gap + btnW / 2, btnY + btnH / 2, btnW, btnH)
+      .setInteractive()
+      .on("pointerdown", () => {
+        this.compileCode();
+      });
+
+    // --- Botón de VERIFICAR (derecha) ---
+    if (this.verifyButton && this.verifyButton.destroy) this.verifyButton.destroy();
+    this.verifyButton = this.add.graphics();
+    this.verifyButton.fillStyle(0x2980b9, 0.93);
+    this.verifyButton.fillRoundedRect(startX + (btnW + gap) * 2, btnY, btnW, btnH, 12);
+    this.verifyButton.lineStyle(2, 0x2471a3);
+    this.verifyButton.strokeRoundedRect(startX + (btnW + gap) * 2, btnY, btnW, btnH, 12);
+    const verifyText = this.add.text(startX + (btnW + gap) * 2 + btnW / 2, btnY + btnH / 2, "Verificar código", {
+      font: "bold 18px Arial",
+      fill: "#ECF0F1",
+    }).setOrigin(0.5);
+    this.add.zone(startX + (btnW + gap) * 2 + btnW / 2, btnY + btnH / 2, btnW, btnH)
+      .setInteractive()
+      .on("pointerdown", () => {
+        this.compileCode();
+      });
   }
 
   createInputTitle(width, height) {
@@ -231,17 +174,16 @@ class scenaInput extends Phaser.Scene {
     compilerDiv = document.createElement("div");
     compilerDiv.id = "compiler-output";
     compilerDiv.style.position = "fixed";
-    if (isMobile) {
-      // Móvil: input a la izquierda, compilador a la derecha (ambos 50vw, 80vh)
-      compilerDiv.style.position = "fixed";
-      compilerDiv.style.left = "50vw";
-      compilerDiv.style.top = "50vh";
-      compilerDiv.style.width = "50vw";
-      compilerDiv.style.height = "40vh";
+    if (isMobile && isLandscape) {
+      // Móvil horizontal: compilador en el centro, ocupa todo el ancho y deja espacio a botones
+      compilerDiv.style.left = "0";
+      compilerDiv.style.top = "31vh";
+      compilerDiv.style.width = "100vw";
+      compilerDiv.style.height = "36vh";
       compilerDiv.style.margin = "0";
       compilerDiv.style.padding = "0 2vw";
     } else {
-      // PC: compilador a la derecha
+      // PC o móvil vertical: compilador a la derecha
       compilerDiv.style.right = "6vw";
       compilerDiv.style.top = "18vh";
       compilerDiv.style.width = "38vw";
@@ -277,11 +219,6 @@ class scenaInput extends Phaser.Scene {
     if (btnRow && btnRow.parentNode) {
       btnRow.parentNode.removeChild(btnRow);
     }
-    // Elimina el título HTML móvil si existe
-    const mobileTitle = document.getElementById('input-title-mobile');
-    if (mobileTitle && mobileTitle.parentNode) {
-      mobileTitle.parentNode.removeChild(mobileTitle);
-    }
     // Limpia el listener de orientación/resize
     if (this._btnRowResizeHandler) {
       window.removeEventListener('resize', this._btnRowResizeHandler);
@@ -303,43 +240,22 @@ class scenaInput extends Phaser.Scene {
     // Crear un elemento HTML para el input
     const input = document.createElement("textarea");
     input.style.position = "fixed";
-    if (isMobile) {
-      // Móvil: input a la izquierda (50vw, 80vh)
+    if (isMobile && isLandscape) {
+      // Móvil horizontal: input arriba, ocupa todo el ancho y deja espacio a botones y compilador
       input.style.left = "0";
-      input.style.top = "10vh";
-      input.style.width = "50vw";
-      input.style.height = "40vh";
+      input.style.top = "8vh";
+      input.style.width = "100vw";
+      input.style.height = "22vh";
       input.style.margin = "0";
       input.style.padding = "0 2vw";
     } else {
-      // PC: input a la izquierda
+      // PC o móvil vertical: input a la izquierda
       input.style.left = "6vw";
       input.style.top = "18vh";
       input.style.width = "38vw";
       input.style.height = "52vh";
       input.style.margin = "";
       input.style.padding = "18px 16px";
-    }
-
-    // Título HTML fijo para móviles (si no existe)
-    if (isMobile && !document.getElementById('input-title-mobile')) {
-      const mobileTitle = document.createElement('div');
-      mobileTitle.id = 'input-title-mobile';
-      mobileTitle.innerText = 'Ingresa tu código Arduino';
-      mobileTitle.style.position = 'fixed';
-      mobileTitle.style.top = '2vh';
-      mobileTitle.style.left = '0';
-      mobileTitle.style.width = '100vw';
-      mobileTitle.style.textAlign = 'center';
-      mobileTitle.style.fontSize = '6vw';
-      mobileTitle.style.fontWeight = 'bold';
-      mobileTitle.style.color = '#00cfff';
-      mobileTitle.style.textShadow = '2px 2px 8px #000, 0 2px 8px #222';
-      mobileTitle.style.zIndex = '2147483647';
-      mobileTitle.style.pointerEvents = 'none';
-      document.body.appendChild(mobileTitle);
-    } else if (!isMobile && document.getElementById('input-title-mobile')) {
-      document.getElementById('input-title-mobile').remove();
     }
     input.style.background = "#212733";
     input.style.color = "#e0f7fa";
@@ -398,7 +314,9 @@ class scenaInput extends Phaser.Scene {
     input.focus();
   }
 
+  // Nuevo botón único debajo del área de código
   createSingleVerifyButton(width, height) {
+    // Detecta si es móvil y horizontal
     const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
     const isLandscape = window.matchMedia("(orientation: landscape)").matches;
     // Botones HTML visibles debajo del input, alineados horizontalmente
@@ -410,15 +328,16 @@ class scenaInput extends Phaser.Scene {
 
     function updateBtnRowLayout() {
       const isLandscapeNow = window.matchMedia("(orientation: landscape)").matches;
-      if (isMobile) {
-        // Móvil: botones abajo, ancho completo y SIEMPRE visibles
+      if (isMobile && isLandscapeNow) {
         btnRow.style.left = "0";
         btnRow.style.right = "0";
-        btnRow.style.top = '';
+        btnRow.style.top = "69vh";
         btnRow.style.width = "100vw";
         btnRow.style.margin = "0";
         btnRow.style.padding = "0 2vw";
-        btnRow.style.display = 'flex';
+        btnRow.style.display = "flex";
+      } else if (isMobile && !isLandscapeNow) {
+        btnRow.style.display = "none";
       } else {
         btnRow.style.left = "6vw";
         btnRow.style.top = "72vh";
@@ -429,20 +348,13 @@ class scenaInput extends Phaser.Scene {
       btnRow.style.justifyContent = "space-between";
       btnRow.style.gap = "2vw";
       btnRow.style.zIndex = "1100";
-      // Solo en móvil: asegúrate de que no haya height ni top
-      if (isMobile) {
-        btnRow.style.height = '';
-        btnRow.style.top = '';
-      }
     }
-    // NO listeners para cambios de orientación/tamaño en móvil: los botones siempre van abajo
-    // Limpieza garantizada en shutdown()
-    if (!isMobile) {
-      updateBtnRowLayout();
-      this._btnRowResizeHandler = () => updateBtnRowLayout();
-      window.addEventListener('resize', this._btnRowResizeHandler);
-      window.addEventListener('orientationchange', this._btnRowResizeHandler);
-    }
+    // Inicializa layout
+    updateBtnRowLayout();
+    // Listener para cambios de orientación/tamaño
+    this._btnRowResizeHandler = () => updateBtnRowLayout();
+    window.addEventListener('resize', this._btnRowResizeHandler);
+    window.addEventListener('orientationchange', this._btnRowResizeHandler);
 
     // --- Botón Pista ---
     const pistaBtn = document.createElement("button");
@@ -525,8 +437,24 @@ class scenaInput extends Phaser.Scene {
     compilarBtn.style.cursor = "pointer";
     compilarBtn.onclick = () => this.compileCode();
 
+    // --- Botón Verificar ---
+    const verificarBtn = document.createElement("button");
+    verificarBtn.innerText = "Verificar código";
+    verificarBtn.style.flex = "1";
+    verificarBtn.style.height = "54px";
+    verificarBtn.style.fontSize = "20px";
+    verificarBtn.style.fontWeight = "bold";
+    verificarBtn.style.background = "#2980b9";
+    verificarBtn.style.color = "#fff";
+    verificarBtn.style.border = "2.5px solid #2471a3";
+    verificarBtn.style.borderRadius = "12px";
+    verificarBtn.style.boxShadow = "0 2px 8px 0 rgba(41,128,185,0.13)";
+    verificarBtn.style.cursor = "pointer";
+    verificarBtn.onclick = () => this.compileCode();
+
     btnRow.appendChild(pistaBtn);
     btnRow.appendChild(compilarBtn);
+    btnRow.appendChild(verificarBtn);
     document.body.appendChild(btnRow);
   }
 
