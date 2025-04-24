@@ -146,20 +146,23 @@ class scenaInput extends Phaser.Scene {
   createInputTitle(width, height) {
     // Título centrado grande y claro
     const titleY = Math.round(height * 0.10);
-    const title = this.add.text(width / 2, titleY, "Ingresa tu código Arduino", {
-      font: "bold 34px Arial",
-      fill: "#00cfff",
-      align: "center",
-      stroke: "#222",
-      strokeThickness: 3,
-      shadow: {
-        offsetX: 2,
-        offsetY: 2,
-        color: '#000',
-        blur: 5,
-        fill: true
-      }
-    }).setOrigin(0.5);
+    const title = document.createElement('div');
+    title.id = 'input-title-fixed';
+    title.innerText = 'Ingresa tu código Arduino';
+    title.style.position = 'fixed';
+    title.style.top = '2vh';
+    title.style.left = '0';
+    title.style.width = '100vw';
+    title.style.textAlign = 'center';
+    title.style.fontSize = '2.2em';
+    title.style.fontWeight = 'bold';
+    title.style.color = '#00cfff';
+    title.style.textShadow = '2px 2px 8px #000, 0 2px 8px #222';
+    title.style.zIndex = '2147483647';
+    title.style.pointerEvents = 'none';
+    // Elimina cualquier título anterior
+    if (document.getElementById('input-title-fixed')) document.getElementById('input-title-fixed').remove();
+    document.body.appendChild(title);
   }
 
   createCompilerSection(width, height) {
