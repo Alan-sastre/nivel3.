@@ -6,7 +6,7 @@ class scenaVideo extends Phaser.Scene {
     preload() {
         this.load.video(
         "introVideo",
-        "assets/scenaVideo/0418.mp4",
+        "assets/scenaVideo/0418.webm",
         "loadeddata"
         );
     }

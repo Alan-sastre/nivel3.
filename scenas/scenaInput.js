@@ -220,6 +220,11 @@ class scenaInput extends Phaser.Scene {
     if (btnRow && btnRow.parentNode) {
       btnRow.parentNode.removeChild(btnRow);
     }
+    // Elimina el título HTML móvil si existe
+    const mobileTitle = document.getElementById('input-title-mobile');
+    if (mobileTitle && mobileTitle.parentNode) {
+      mobileTitle.parentNode.removeChild(mobileTitle);
+    }
     // Limpia el listener de orientación/resize
     if (this._btnRowResizeHandler) {
       window.removeEventListener('resize', this._btnRowResizeHandler);
@@ -257,6 +262,27 @@ class scenaInput extends Phaser.Scene {
       input.style.height = "52vh";
       input.style.margin = "";
       input.style.padding = "18px 16px";
+    }
+
+    // Título HTML fijo para móviles (si no existe)
+    if (isMobile && !document.getElementById('input-title-mobile')) {
+      const mobileTitle = document.createElement('div');
+      mobileTitle.id = 'input-title-mobile';
+      mobileTitle.innerText = 'Ingresa tu código Arduino';
+      mobileTitle.style.position = 'fixed';
+      mobileTitle.style.top = '2vh';
+      mobileTitle.style.left = '0';
+      mobileTitle.style.width = '100vw';
+      mobileTitle.style.textAlign = 'center';
+      mobileTitle.style.fontSize = '6vw';
+      mobileTitle.style.fontWeight = 'bold';
+      mobileTitle.style.color = '#00cfff';
+      mobileTitle.style.textShadow = '2px 2px 8px #000, 0 2px 8px #222';
+      mobileTitle.style.zIndex = '2147483647';
+      mobileTitle.style.pointerEvents = 'none';
+      document.body.appendChild(mobileTitle);
+    } else if (!isMobile && document.getElementById('input-title-mobile')) {
+      document.getElementById('input-title-mobile').remove();
     }
     input.style.background = "#212733";
     input.style.color = "#e0f7fa";
@@ -330,7 +356,7 @@ class scenaInput extends Phaser.Scene {
     function updateBtnRowLayout() {
       const isLandscapeNow = window.matchMedia("(orientation: landscape)").matches;
       if (isMobile) {
-        // Móvil: botones abajo, ancho completo
+        // Móvil: botones abajo, ancho completo y SIEMPRE visibles
         btnRow.style.left = "0";
         btnRow.style.right = "0";
         btnRow.style.top = "91vh";

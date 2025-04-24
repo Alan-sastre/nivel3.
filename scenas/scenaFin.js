@@ -4,7 +4,7 @@ class scenaFin extends Phaser.Scene {
   }
 
   preload() {
-    this.load.video("videofin", "assets/scenaFin/0000.mp4", "loadeddata");
+    this.load.video("videofin", "assets/scenaFin/0000.webm", "loadeddata");
   }
 
   create() {

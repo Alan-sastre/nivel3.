@@ -4,7 +4,7 @@ class scenaUltima extends Phaser.Scene {
   }
 
   preload() {
-    this.load.video("scenaUltima", "assets/scenaUltima/01.mp4", "loadeddata");
+    this.load.video("scenaUltima", "assets/scenaUltima/01.webm", "loadeddata");
   }
 
   create() {
