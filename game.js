@@ -20,7 +20,7 @@ var config = {
   render: {
     pixelArt: true,
   },
-  scene: [scenaInput, scenaFin, scenaIA, scenaUltima], //scenaPrincipal, scenaVideo,scenaPregunta
+  scene: [scenaPrincipal, scenaVideo,scenaPregunta,scenaInput, scenaFin, scenaIA, scenaUltima], //
 };
 
 var game = new Phaser.Game(config);
