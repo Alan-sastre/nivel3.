@@ -32,15 +32,13 @@ class scenaInput extends Phaser.Scene {
       this.fondo.destroy();
     }
     // Elimina cualquier fondo HTML residual
-    if (document.getElementById('scenaInputBg')) {
-      document.getElementById('scenaInputBg').remove();
+    if (document.getElementById("scenaInputBg")) {
+      document.getElementById("scenaInputBg").remove();
     }
     this.fondo = this.add.image(0, 0, "fondoo");
     this.fondo.setOrigin(0, 0);
     this.fondo.displayWidth = width;
     this.fondo.displayHeight = height;
-
-
 
     // Mostrar título inicial
     this.showInitialAlert();
@@ -55,8 +53,8 @@ class scenaInput extends Phaser.Scene {
     this.createCompilerSection(width, height);
 
     // Registrar eventos para limpiar el textarea al salir de la escena
-    this.events.on('shutdown', this.shutdown, this);
-    this.events.on('destroy', this.shutdown, this);
+    this.events.on("shutdown", this.shutdown, this);
+    this.events.on("destroy", this.shutdown, this);
   }
 
   createMainContainer(width, height) {
@@ -64,14 +62,25 @@ class scenaInput extends Phaser.Scene {
     const margin = 32;
     const mainContainer = this.add.graphics();
     mainContainer.fillStyle(0x2c3e50, 0.92);
-    mainContainer.fillRoundedRect(margin, margin, width - margin * 2, height - margin * 2, 18);
+    mainContainer.fillRoundedRect(
+      margin,
+      margin,
+      width - margin * 2,
+      height - margin * 2,
+      18
+    );
     mainContainer.lineStyle(3, 0x3498db);
-    mainContainer.strokeRoundedRect(margin, margin, width - margin * 2, height - margin * 2, 18);
+    mainContainer.strokeRoundedRect(
+      margin,
+      margin,
+      width - margin * 2,
+      height - margin * 2,
+      18
+    );
   }
 
   // Elimina la visualización interna del código, solo deja el área de ingreso
   // Eliminado: createSingleCodeArea. Ya no se dibuja ningún recuadro ni título. Solo se usará el input HTML, los botones y el área del compilador.
-
 
   createSingleVerifyButton(width, height) {
     // Botones alineados debajo del input
@@ -90,17 +99,25 @@ class scenaInput extends Phaser.Scene {
     this.hintButton.fillRoundedRect(startX, btnY, btnW, btnH, 12);
     this.hintButton.lineStyle(2, 0xf39c12);
     this.hintButton.strokeRoundedRect(startX, btnY, btnW, btnH, 12);
-    const hintText = this.add.text(startX + btnW / 2, btnY + btnH / 2, "Pista", {
-      font: "bold 18px Arial",
-      fill: "#2C3E50",
-    }).setOrigin(0.5);
-    this.add.zone(startX + btnW / 2, btnY + btnH / 2, btnW, btnH)
+    const hintText = this.add
+      .text(startX + btnW / 2, btnY + btnH / 2, "Pista", {
+        font: "bold 18px Arial",
+        fill: "#2C3E50",
+      })
+      .setOrigin(0.5);
+    this.add
+      .zone(startX + btnW / 2, btnY + btnH / 2, btnW, btnH)
       .setInteractive()
       .on("pointerdown", () => {
         if (this.hints && this.hints.length > 0) {
           const hint = this.hints[this.currentHintIndex % this.hints.length];
           if (window.Swal) {
-            Swal.fire({ title: 'Pista', text: hint, icon: 'info', confirmButtonText: 'Ok' });
+            Swal.fire({
+              title: "Pista",
+              text: hint,
+              icon: "info",
+              confirmButtonText: "Ok",
+            });
           } else {
             alert(hint);
           }
@@ -109,34 +126,71 @@ class scenaInput extends Phaser.Scene {
       });
 
     // --- Botón de COMPILAR (centro) ---
-    if (this.compileButton && this.compileButton.destroy) this.compileButton.destroy();
+    if (this.compileButton && this.compileButton.destroy)
+      this.compileButton.destroy();
     this.compileButton = this.add.graphics();
     this.compileButton.fillStyle(0x2ecc71, 0.93);
-    this.compileButton.fillRoundedRect(startX + btnW + gap, btnY, btnW, btnH, 12);
+    this.compileButton.fillRoundedRect(
+      startX + btnW + gap,
+      btnY,
+      btnW,
+      btnH,
+      12
+    );
     this.compileButton.lineStyle(2, 0x27ae60);
-    this.compileButton.strokeRoundedRect(startX + btnW + gap, btnY, btnW, btnH, 12);
-    const compileText = this.add.text(startX + btnW + gap + btnW / 2, btnY + btnH / 2, "Compilar", {
-      font: "bold 18px Arial",
-      fill: "#ECF0F1",
-    }).setOrigin(0.5);
-    this.add.zone(startX + btnW + gap + btnW / 2, btnY + btnH / 2, btnW, btnH)
+    this.compileButton.strokeRoundedRect(
+      startX + btnW + gap,
+      btnY,
+      btnW,
+      btnH,
+      12
+    );
+    const compileText = this.add
+      .text(startX + btnW + gap + btnW / 2, btnY + btnH / 2, "Compilar", {
+        font: "bold 18px Arial",
+        fill: "#ECF0F1",
+      })
+      .setOrigin(0.5);
+    this.add
+      .zone(startX + btnW + gap + btnW / 2, btnY + btnH / 2, btnW, btnH)
       .setInteractive()
       .on("pointerdown", () => {
         this.compileCode();
       });
 
     // --- Botón de VERIFICAR (derecha) ---
-    if (this.verifyButton && this.verifyButton.destroy) this.verifyButton.destroy();
+    if (this.verifyButton && this.verifyButton.destroy)
+      this.verifyButton.destroy();
     this.verifyButton = this.add.graphics();
     this.verifyButton.fillStyle(0x2980b9, 0.93);
-    this.verifyButton.fillRoundedRect(startX + (btnW + gap) * 2, btnY, btnW, btnH, 12);
+    this.verifyButton.fillRoundedRect(
+      startX + (btnW + gap) * 2,
+      btnY,
+      btnW,
+      btnH,
+      12
+    );
     this.verifyButton.lineStyle(2, 0x2471a3);
-    this.verifyButton.strokeRoundedRect(startX + (btnW + gap) * 2, btnY, btnW, btnH, 12);
-    const verifyText = this.add.text(startX + (btnW + gap) * 2 + btnW / 2, btnY + btnH / 2, "Verificar código", {
-      font: "bold 18px Arial",
-      fill: "#ECF0F1",
-    }).setOrigin(0.5);
-    this.add.zone(startX + (btnW + gap) * 2 + btnW / 2, btnY + btnH / 2, btnW, btnH)
+    this.verifyButton.strokeRoundedRect(
+      startX + (btnW + gap) * 2,
+      btnY,
+      btnW,
+      btnH,
+      12
+    );
+    const verifyText = this.add
+      .text(
+        startX + (btnW + gap) * 2 + btnW / 2,
+        btnY + btnH / 2,
+        "Verificar código",
+        {
+          font: "bold 18px Arial",
+          fill: "#ECF0F1",
+        }
+      )
+      .setOrigin(0.5);
+    this.add
+      .zone(startX + (btnW + gap) * 2 + btnW / 2, btnY + btnH / 2, btnW, btnH)
       .setInteractive()
       .on("pointerdown", () => {
         this.compileCode();
@@ -145,29 +199,32 @@ class scenaInput extends Phaser.Scene {
 
   createInputTitle(width, height) {
     // Título centrado grande y claro
-    const titleY = Math.round(height * 0.10);
-    const title = document.createElement('div');
-    title.id = 'input-title-fixed';
-    title.innerText = 'Ingresa tu código Arduino';
-    title.style.position = 'fixed';
-    title.style.top = '2vh';
-    title.style.left = '0';
-    title.style.width = '100vw';
-    title.style.textAlign = 'center';
-    title.style.fontSize = '2.2em';
-    title.style.fontWeight = 'bold';
-    title.style.color = '#00cfff';
-    title.style.textShadow = '2px 2px 8px #000, 0 2px 8px #222';
-    title.style.zIndex = '2147483647';
-    title.style.pointerEvents = 'none';
+    const titleY = Math.round(height * 0.1);
+    const title = document.createElement("div");
+    title.id = "input-title-fixed";
+    title.innerText = "Ingresa tu código Arduino";
+    title.style.position = "fixed";
+    title.style.top = "2vh";
+    title.style.left = "0";
+    title.style.width = "100vw";
+    title.style.textAlign = "center";
+    title.style.fontSize = "2.2em";
+    title.style.fontWeight = "bold";
+    title.style.color = "#00cfff";
+    title.style.textShadow = "2px 2px 8px #000, 0 2px 8px #222";
+    title.style.zIndex = "2147483647";
+    title.style.pointerEvents = "none";
     // Elimina cualquier título anterior
-    if (document.getElementById('input-title-fixed')) document.getElementById('input-title-fixed').remove();
+    if (document.getElementById("input-title-fixed"))
+      document.getElementById("input-title-fixed").remove();
     document.body.appendChild(title);
   }
 
   createCompilerSection(width, height) {
     // Detecta si es móvil y horizontal
-    const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+    const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(
+      navigator.userAgent
+    );
     const isLandscape = window.matchMedia("(orientation: landscape)").matches;
     // Crea un div HTML fijo para mostrar el resultado de la compilación
     let compilerDiv = document.getElementById("compiler-output");
@@ -190,7 +247,8 @@ class scenaInput extends Phaser.Scene {
     compilerDiv.style.color = "#e0f7fa";
     compilerDiv.style.border = "2.5px solid #00cfff";
     compilerDiv.style.borderRadius = "14px";
-    compilerDiv.style.boxShadow = "0 6px 24px 0 rgba(0,207,255,0.08), 0 2px 8px 0 rgba(44,62,80,0.13)";
+    compilerDiv.style.boxShadow =
+      "0 6px 24px 0 rgba(0,207,255,0.08), 0 2px 8px 0 rgba(44,62,80,0.13)";
     compilerDiv.style.fontFamily = "Consolas, monospace";
     compilerDiv.style.fontSize = "18px";
     compilerDiv.style.padding = "18px 16px";
@@ -210,27 +268,37 @@ class scenaInput extends Phaser.Scene {
       this.textInput = null;
     }
     // Elimina los botones HTML si existen
-    const btnRow = document.getElementById('input-btn-row');
+    const btnRow = document.getElementById("input-btn-row");
     if (btnRow && btnRow.parentNode) {
       btnRow.parentNode.removeChild(btnRow);
     }
     // Limpia el listener de orientación/resize
     if (this._btnRowResizeHandler) {
-      window.removeEventListener('resize', this._btnRowResizeHandler);
-      window.removeEventListener('orientationchange', this._btnRowResizeHandler);
+      window.removeEventListener("resize", this._btnRowResizeHandler);
+      window.removeEventListener(
+        "orientationchange",
+        this._btnRowResizeHandler
+      );
       this._btnRowResizeHandler = null;
     }
     // Elimina la sección del compilador si existe
-    const compilerDiv = document.getElementById('compiler-output');
+    const compilerDiv = document.getElementById("compiler-output");
     if (compilerDiv && compilerDiv.parentNode) {
       compilerDiv.parentNode.removeChild(compilerDiv);
+    }
+    // Elimina el título si existe
+    const title = document.getElementById("input-title-fixed");
+    if (title && title.parentNode) {
+      title.parentNode.removeChild(title);
     }
   }
 
   // Elimina el área visual Phaser del código, solo deja el textarea
   setupTextInput(width, height) {
     // Detecta si es móvil y horizontal
-    const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+    const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(
+      navigator.userAgent
+    );
     const isLandscape = window.matchMedia("(orientation: landscape)").matches;
     // Crear un elemento HTML para el input
     const input = document.createElement("textarea");
@@ -248,7 +316,8 @@ class scenaInput extends Phaser.Scene {
     input.style.color = "#e0f7fa";
     input.style.border = "2.5px solid #00cfff";
     input.style.borderRadius = "14px";
-    input.style.boxShadow = "0 6px 24px 0 rgba(0,207,255,0.08), 0 2px 8px 0 rgba(44,62,80,0.13)";
+    input.style.boxShadow =
+      "0 6px 24px 0 rgba(0,207,255,0.08), 0 2px 8px 0 rgba(44,62,80,0.13)";
     input.style.transition = "box-shadow 0.2s, border-color 0.2s";
     input.style.outline = "none";
     input.style.resize = "none";
@@ -265,13 +334,14 @@ class scenaInput extends Phaser.Scene {
     input.style.zIndex = 20;
     input.placeholder = "Escribe aquí tu código Arduino...";
     // Efecto focus
-    input.onfocus = function() {
+    input.onfocus = function () {
       input.style.borderColor = "#2ecc71";
       input.style.boxShadow = "0 0 0 3px rgba(46,204,113,0.13)";
     };
-    input.onblur = function() {
+    input.onblur = function () {
       input.style.borderColor = "#3498db";
-      input.style.boxShadow = "0 4px 18px 0 rgba(52,152,219,0.13), 0 1.5px 6px 0 rgba(44,62,80,0.12)";
+      input.style.boxShadow =
+        "0 4px 18px 0 rgba(52,152,219,0.13), 0 1.5px 6px 0 rgba(44,62,80,0.12)";
     };
     // Elimina sincronización visual interna
     input.addEventListener("input", () => {
@@ -304,7 +374,9 @@ class scenaInput extends Phaser.Scene {
   // Nuevo botón único debajo del área de código
   createSingleVerifyButton(width, height) {
     // Detecta si es móvil y horizontal
-    const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+    const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(
+      navigator.userAgent
+    );
     const isLandscape = window.matchMedia("(orientation: landscape)").matches;
     // Botones HTML visibles debajo del input, alineados horizontalmente
     let btnRow = document.getElementById("input-btn-row");
@@ -314,7 +386,9 @@ class scenaInput extends Phaser.Scene {
     btnRow.style.position = "fixed";
 
     function updateBtnRowLayout() {
-      const isLandscapeNow = window.matchMedia("(orientation: landscape)").matches;
+      const isLandscapeNow = window.matchMedia(
+        "(orientation: landscape)"
+      ).matches;
       if (isMobile && isLandscapeNow) {
         btnRow.style.left = "0";
         btnRow.style.right = "0";
@@ -340,8 +414,8 @@ class scenaInput extends Phaser.Scene {
     updateBtnRowLayout();
     // Listener para cambios de orientación/tamaño
     this._btnRowResizeHandler = () => updateBtnRowLayout();
-    window.addEventListener('resize', this._btnRowResizeHandler);
-    window.addEventListener('orientationchange', this._btnRowResizeHandler);
+    window.addEventListener("resize", this._btnRowResizeHandler);
+    window.addEventListener("orientationchange", this._btnRowResizeHandler);
 
     // --- Botón Pista ---
     const pistaBtn = document.createElement("button");
@@ -361,24 +435,26 @@ class scenaInput extends Phaser.Scene {
         const hint = this.hints[this.currentHintIndex % this.hints.length];
         if (window.Swal) {
           Swal.fire({
-            title: 'Pista',
+            title: "Pista",
             text: hint,
-            icon: 'warning',
-            confirmButtonText: 'Ok',
-            background: '#fffbe6',
-            color: '#a67c00',
+            icon: "warning",
+            confirmButtonText: "Ok",
+            background: "#fffbe6",
+            color: "#a67c00",
             customClass: {
-              popup: 'swal2-pista-popup',
-              title: 'swal2-pista-title',
-              confirmButton: 'swal2-pista-confirm',
+              popup: "swal2-pista-popup",
+              title: "swal2-pista-title",
+              confirmButton: "swal2-pista-confirm",
             },
             didOpen: () => {
               // Fuerza z-index máximo para la alerta y el popup
-              const swal = document.querySelector('.swal2-container');
-              const popup = document.querySelector('.swal2-popup');
-              if (swal) swal.style.setProperty('z-index', '2147483647', 'important');
-              if (popup) popup.style.setProperty('z-index', '2147483647', 'important');
-            }
+              const swal = document.querySelector(".swal2-container");
+              const popup = document.querySelector(".swal2-popup");
+              if (swal)
+                swal.style.setProperty("z-index", "2147483647", "important");
+              if (popup)
+                popup.style.setProperty("z-index", "2147483647", "important");
+            },
           });
         } else {
           alert(hint);
@@ -388,9 +464,9 @@ class scenaInput extends Phaser.Scene {
     };
 
     // Agrega estilos SweetAlert2 personalizados para pista
-    if (!document.getElementById('swal2-pista-style')) {
-      const style = document.createElement('style');
-      style.id = 'swal2-pista-style';
+    if (!document.getElementById("swal2-pista-style")) {
+      const style = document.createElement("style");
+      style.id = "swal2-pista-style";
       style.innerHTML = `
         .swal2-pista-popup { border: 3px solid #ffe066 !important; box-shadow: 0 0 32px #ffe06688 !important; }
         .swal2-pista-title { color: #a67c00 !important; font-weight: bold !important; }
@@ -474,7 +550,8 @@ void loop() {
     // Mostrar resultado en el div del compilador
     if (this.compilerDiv) {
       if (this.codeText.trim() === correctCode.trim()) {
-        this.compilerDiv.innerHTML = '<span style="color:green;font-weight:bold">¡Felicitaciones, tu código es correcto!</span>';
+        this.compilerDiv.innerHTML =
+          '<span style="color:green;font-weight:bold">¡Felicitaciones, tu código es correcto!</span>';
         // Transición automática a la siguiente escena tras 2 segundos
         setTimeout(() => {
           this.scene.start("scenaFin");
@@ -482,9 +559,12 @@ void loop() {
         return;
       }
       if (this.compilerOutput.length > 0) {
-        this.compilerDiv.innerHTML = this.compilerOutput.map(e => `<span style='color:red'>${e}</span>`).join('<br>');
+        this.compilerDiv.innerHTML = this.compilerOutput
+          .map((e) => `<span style='color:red'>${e}</span>`)
+          .join("<br>");
       } else {
-        this.compilerDiv.innerHTML = '<span style="color:orange">Compilación exitosa, pero el código no es exactamente el esperado.</span>';
+        this.compilerDiv.innerHTML =
+          '<span style="color:orange">Compilación exitosa, pero el código no es exactamente el esperado.</span>';
       }
     }
   }
