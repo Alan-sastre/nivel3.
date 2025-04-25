@@ -459,16 +459,16 @@ class scenaInput extends Phaser.Scene {
     const correctCode = `int ledRojo = 9;
 int ledVerde = 10;
 void setup() {
-  pinMode(ledRojo, OUTPUT);
-  pinMode(ledVerde, OUTPUT);
+ pinMode(ledRojo, OUTPUT);
+ pinMode(ledVerde, OUTPUT);
 }
 void loop() {
-  digitalWrite(ledRojo, HIGH);
-  delay(5000);
-  digitalWrite(ledRojo, LOW);
-  digitalWrite(ledVerde, HIGH);
-  delay(5000);
-  digitalWrite(ledVerde, LOW);
+ digitalWrite(ledRojo, HIGH);
+ delay(5000);
+ digitalWrite(ledRojo, LOW);
+ digitalWrite(ledVerde, HIGH);
+ delay(5000);
+ digitalWrite(ledVerde, LOW);
 }`;
 
     // Mostrar resultado en el div del compilador
