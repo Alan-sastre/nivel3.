@@ -64,6 +64,22 @@ class scenaPregunta extends Phaser.Scene {
     // Código incorrecto
     const wrongCode = `int ledRojo = 9;
 int ledVerde = 10;
+void setup() {
+ pinMode(ledRojo, OUTPUT);
+ pinMode(ledVerde, OUTPUT);
+}
+void loop() {
+ digitalWrite(ledRojo, HIGH);
+ delay(5000);
+ digitalWrite(ledRojo, LOW);
+ digitalWrite(ledVerde, HIGH);
+ delay(5000);
+ digitalWrite(ledVerde, LOW);
+}`;
+
+    // Código correcto
+    const correctCode = `int ledRojo = 9;
+int ledVerde = 10;
 
 void setup() {
 }
@@ -77,22 +93,6 @@ void loop() {
   digitalWrite(ledVerde, LOW);
 }
 `;
-
-    // Código correcto
-    const correctCode = `int ledRojo = 9;
-int ledVerde = 10;
-void setup() {
- pinMode(ledRojo, OUTPUT);
- pinMode(ledVerde, OUTPUT);
-}
-void loop() {
- digitalWrite(ledRojo, HIGH);
- delay(5000);
- digitalWrite(ledRojo, LOW);
- digitalWrite(ledVerde, HIGH);
- delay(5000);
- digitalWrite(ledVerde, LOW);
-}`;
 
     // Crear los cuadros según la posición aleatoria
     const leftBox = this.add.graphics();
