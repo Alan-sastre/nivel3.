@@ -6,7 +6,7 @@ class scenaInput extends Phaser.Scene {
     this.hints = [
       "Recuerda que necesitas declarar los pines de los LEDs",
       "No olvides configurar los pines como OUTPUT en setup()",
-      "El semáforo necesita delays para cambiar de estado",
+      "Recuerda no dejar espacios entre tu codigo",
       "Asegúrate de apagar un LED antes de encender el otro",
       "El código debe estar dentro de las funciones setup() y loop()",
     ];
@@ -15,6 +15,7 @@ class scenaInput extends Phaser.Scene {
 
   preload() {
     this.load.image("fondoo", "assets/ScenaDialogo/fondo.jpg");
+    this.load.audio("musica", "assets/scenaPrincipal/musica.mp3");
   }
 
   create() {
@@ -55,6 +56,9 @@ class scenaInput extends Phaser.Scene {
     // Registrar eventos para limpiar el textarea al salir de la escena
     this.events.on("shutdown", this.shutdown, this);
     this.events.on("destroy", this.shutdown, this);
+
+    const musica = this.sound.add("musica"); // Crea una instancia del sonido
+    musica.play({ voluene: 0.1, loop: true }); // Reproduce la música con volumen 0.5 y bucle infinito
   }
 
   createMainContainer(width, height) {
@@ -78,9 +82,6 @@ class scenaInput extends Phaser.Scene {
       18
     );
   }
-
-  // Elimina la visualización interna del código, solo deja el área de ingreso
-  // Eliminado: createSingleCodeArea. Ya no se dibuja ningún recuadro ni título. Solo se usará el input HTML, los botones y el área del compilador.
 
   createSingleVerifyButton(width, height) {
     // Botones alineados debajo del input
@@ -378,7 +379,7 @@ class scenaInput extends Phaser.Scene {
       navigator.userAgent
     );
     const isLandscape = window.matchMedia("(orientation: landscape)").matches;
-    // Botones HTML visibles debajo del input, alineados horizontalmente
+
     let btnRow = document.getElementById("input-btn-row");
     if (btnRow) btnRow.remove();
     btnRow = document.createElement("div");
@@ -517,6 +518,19 @@ class scenaInput extends Phaser.Scene {
   compileCode() {
     this.compilerOutput = [];
 
+    // Función para normalizar el código
+    const normalizeCode = (code) => {
+      return code
+        .replace(/\s+/g, " ") // Reemplaza múltiples espacios con uno solo
+        .replace(/\s*{\s*/g, "{") // Elimina espacios alrededor de llaves de apertura
+        .replace(/\s*}\s*/g, "}") // Elimina espacios alrededor de llaves de cierre
+        .replace(/\s*;\s*/g, ";") // Elimina espacios alrededor de punto y coma
+        .replace(/\s*\(\s*/g, "(") // Elimina espacios después de paréntesis de apertura
+        .replace(/\s*\)\s*/g, ")") // Elimina espacios antes de paréntesis de cierre
+        .replace(/\s*,\s*/g, ",") // Elimina espacios alrededor de comas
+        .trim(); // Elimina espacios al inicio y final
+    };
+
     // Análisis del código
     if (!this.codeText.includes("int ledRojo")) {
       this.compilerOutput.push("Error: Variable 'ledRojo' no declarada");
@@ -547,12 +561,16 @@ void loop() {
  digitalWrite(ledVerde, LOW);
 }`;
 
+    // Normalizar tanto el código del usuario como el código correcto
+    const normalizedUserCode = normalizeCode(this.codeText);
+    const normalizedCorrectCode = normalizeCode(correctCode);
+
     // Mostrar resultado en el div del compilador
     if (this.compilerDiv) {
-      if (this.codeText.trim() === correctCode.trim()) {
+      if (normalizedUserCode === normalizedCorrectCode) {
         this.compilerDiv.innerHTML =
           '<span style="color:green;font-weight:bold">¡Felicitaciones, tu código es correcto!</span>';
-        // Transición automática a la siguiente escena tras 2 segundos
+
         setTimeout(() => {
           this.scene.start("scenaFin");
         }, 2000);
@@ -688,10 +706,7 @@ void loop() {
     });
   }
 
-  showInitialAlert() {
-    // No mostrar ninguna alerta ni overlay
-    // Mejorar la organización visual general desde createInputTitle y los estilos HTML
-  }
+  showInitialAlert() {}
 
   update() {}
 }

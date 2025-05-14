@@ -67,7 +67,6 @@ class scenaPrincipal extends Phaser.Scene {
     // Detener la música antes de cambiar de escena (opcional)
     this.sound.stopAll();
 
-
     this.scene.start("scenaVideo");
   }
 

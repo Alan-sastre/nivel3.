@@ -1,9 +1,10 @@
 class scenaIA extends Phaser.Scene {
   constructor() {
     super({ key: "scenaIA" });
+    this.answeredCorrectly = false;
     this.messages = [
       {
-        text: "Fallo en la red eléctrica. Necesitamos ayuda urgente.",
+        text: "Fallo en la redéctrica. Necesitamos ayuda urgente.",
         options: [
           { label: "A) Ignorar el mensaje", value: "Spam" },
           { label: "B) Clasificar como Normal", value: "Normal" },
@@ -47,6 +48,7 @@ class scenaIA extends Phaser.Scene {
   preload() {
     // Cargar fuentes y assets necesarios
     this.load.image("gradientBg", "assets/gradient-bg.png");
+    this.load.audio("musica", "assets/scenaPrincipal/musica.mp3");
   }
 
   create() {
@@ -68,6 +70,9 @@ class scenaIA extends Phaser.Scene {
       gradient.fillStyle(colors[colorIndex], 0.95);
       gradient.fillRect(0, y, gradientWidth, 1);
     }
+
+    const musica = this.sound.add("musica"); // Crea una instancia del sonido
+    musica.play({ voluene: 0.1, loop: true }); // Reproduce la música con volumen 0.5 y bucle infinito
 
     // Título elegante
     const title = this.add
@@ -125,10 +130,11 @@ class scenaIA extends Phaser.Scene {
       // Fondo del botón con estilo elegante
       const btn = this.add.graphics();
 
-      // Verificar si la opción ya fue marcada como incorrecta
+      // Verificar si la opción ya fue marcada como incorrecta o es correcta
       const isIncorrect = this.incorrectOptions.includes(option.value);
+      const isCorrect = option.isCorrect && this.answeredCorrectly;
 
-      btn.fillStyle(isIncorrect ? 0xe74c3c : 0xecf0f1, 0.95);
+      btn.fillStyle(isIncorrect ? 0xe74c3c : isCorrect ? 0x2ecc71 : 0xecf0f1, 0.95);
       btn.lineStyle(
         2,
         isIncorrect ? 0xe74c3c : option.isCorrect ? 0x2c3e50 : 0x7f8c8d,
@@ -157,7 +163,7 @@ class scenaIA extends Phaser.Scene {
           option.label,
           {
             font: "22px Arial",
-            color: isIncorrect ? "#ECF0F1" : "#2C3E50",
+            color: (isIncorrect || isCorrect) ? "#ECF0F1" : "#2C3E50",
             align: "center",
           }
         )
@@ -255,6 +261,74 @@ class scenaIA extends Phaser.Scene {
       btn.disableInteractive();
     });
 
+    // Marcar la opción seleccionada como correcta o incorrecta
+    const btn = this.optionButtons[optionIndex].getData("graphics");
+    const text = this.optionButtons[optionIndex].getData("text");
+
+    // Limpiar el botón actual
+    btn.clear();
+
+    // Aplicar el color correspondiente
+    if (selectedOption.isCorrect) {
+      this.answeredCorrectly = true;
+      // Verde para respuestas correctas
+      btn.fillStyle(0x2ecc71, 1);
+      btn.lineStyle(2, 0x27ae60, 1);
+      text.setColor("#FFFFFF");
+      
+      // Actualizar todas las opciones
+      this.optionButtons.forEach((button, idx) => {
+        if (idx !== optionIndex) {
+          const btnGraphics = button.getData("graphics");
+          const btnText = button.getData("text");
+          const btnOption = button.getData("option");
+          const btnY = 280 + idx * (60 + 20);
+          
+          btnGraphics.clear();
+          if (btnOption.isCorrect) {
+            btnGraphics.fillStyle(0x2ecc71, 1);
+            btnGraphics.lineStyle(2, 0x27ae60, 1);
+            btnText.setColor("#FFFFFF");
+          } else {
+            btnGraphics.fillStyle(0xecf0f1, 0.95);
+            btnGraphics.lineStyle(2, 0x7f8c8d, 1);
+          }
+          
+          btnGraphics.fillRoundedRect(
+            this.scale.width / 2 - (this.scale.width - 100) / 2,
+            btnY,
+            this.scale.width - 100,
+            60,
+            15
+          );
+          btnGraphics.strokeRoundedRect(
+            this.scale.width / 2 - (this.scale.width - 100) / 2,
+            btnY,
+            this.scale.width - 100,
+            60,
+            15
+          );
+        }
+      });
+
+      // Dibujar el botón con el nuevo color
+      const buttonY = 280 + optionIndex * (60 + 20);
+      btn.fillRoundedRect(
+        this.scale.width / 2 - (this.scale.width - 100) / 2,
+        buttonY,
+        this.scale.width - 100,
+        60,
+        15
+      );
+      btn.strokeRoundedRect(
+        this.scale.width / 2 - (this.scale.width - 100) / 2,
+        buttonY,
+        this.scale.width - 100,
+        60,
+        15
+      );
+    }
+
     // Configurar barra de progreso con diseño elegante
     const progressWidth = this.scale.width - 100;
     const progressHeight = 25;
@@ -272,10 +346,9 @@ class scenaIA extends Phaser.Scene {
       10
     );
 
-    // Barra de progreso
+    // Barra de progreso - siempre verde
     const progressBar = this.add.graphics();
-    const barColor = selectedOption.isCorrect ? 0x2c3e50 : 0xe74c3c;
-    progressBar.fillStyle(barColor, 0.8);
+    progressBar.fillStyle(0x2ecc71, 0.8); // Siempre verde
     progressBar.fillRoundedRect(progressX, progressY, 0, progressHeight, 10);
 
     // Texto de progreso con estilo elegante
@@ -290,7 +363,7 @@ class scenaIA extends Phaser.Scene {
 
     // Animación de la barra de progreso
     let startTime = null;
-    const animationDuration = 2000;
+    const animationDuration = selectedOption.isCorrect ? 2000 : 1000; // 2 segundos para correctas, 1 segundo para incorrectas
 
     const updateProgress = (timestamp) => {
       if (!startTime) startTime = timestamp;
@@ -306,7 +379,7 @@ class scenaIA extends Phaser.Scene {
         (elapsed / animationDuration) * progressWidth
       );
       progressBar.clear();
-      progressBar.fillStyle(barColor, 0.8);
+      progressBar.fillStyle(0x2ecc71, 0.8); // Siempre verde
       progressBar.fillRoundedRect(
         progressX,
         progressY,
@@ -409,11 +482,19 @@ class scenaIA extends Phaser.Scene {
               this.scene.start("scenaUltima");
             });
           } else {
-            // Actualizar texto y botones
-            this.currentMessage = this.messages[this.currentMessageIndex];
-            this.messageText.setText(this.currentMessage.text);
-            this.destroyOptionButtons();
-            this.createOptionButtons();
+            // Esperar 2 segundos antes de actualizar a la siguiente pregunta
+            this.time.delayedCall(2000, () => {
+              // Limpiar elementos de progreso
+              progressBg.destroy();
+              progressBar.destroy();
+              progressText.destroy();
+
+              // Actualizar texto y botones
+              this.currentMessage = this.messages[this.currentMessageIndex];
+              this.messageText.setText(this.currentMessage.text);
+              this.destroyOptionButtons();
+              this.createOptionButtons();
+            });
           }
         } else {
           progressText.setText("Clasificación Incorrecta");

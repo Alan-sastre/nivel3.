@@ -9,9 +9,13 @@ class scenaPregunta extends Phaser.Scene {
   preload() {
     // Cargar el fondo
     this.load.image("fondoo", "assets/ScenaDialogo/fondo.jpg");
+    this.load.audio("musica", "assets/scenaPrincipal/musica.mp3");
   }
 
   create() {
+    const musica = this.sound.add("musica"); // Crea una instancia del sonido
+    musica.play({ voluene: 0.1, loop: true }); // Reproduce la música con volumen 0.5 y bucle infinito
+
     const { width, height } = this.scale.displaySize;
 
     // Fondo
@@ -23,6 +27,8 @@ class scenaPregunta extends Phaser.Scene {
     // Crear los recuadros de código
     this.createCodeBoxes();
   }
+
+
 
   createCodeBoxes() {
     // Título de la pregunta con estilo mejorado
@@ -323,7 +329,6 @@ void loop() {
       {
         font: "20px Courier",
         fill: "#ECF0F1",
-        backgroundColor: "#2C3E50",
         padding: { x: 20, y: 10 },
         wordWrap: { width: this.scale.width / 2 - 150 },
       }
@@ -390,7 +395,6 @@ void loop() {
       {
         font: "20px Courier",
         fill: "#ECF0F1",
-        backgroundColor: "#2C3E50",
         padding: { x: 20, y: 10 },
         wordWrap: { width: this.scale.width / 2 - 150 },
       }
@@ -457,7 +461,6 @@ void loop() {
       {
         font: "20px Courier",
         fill: "#ECF0F1",
-        backgroundColor: "#2C3E50",
         padding: { x: 20, y: 10 },
         wordWrap: { width: this.scale.width / 2 - 150 },
       }
@@ -525,7 +528,6 @@ void loop() {
       {
         font: "20px Courier",
         fill: "#ECF0F1",
-        backgroundColor: "#2C3E50",
         padding: { x: 20, y: 10 },
         wordWrap: { width: this.scale.width / 2 - 150 },
       }
